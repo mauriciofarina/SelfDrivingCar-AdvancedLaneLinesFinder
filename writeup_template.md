@@ -28,6 +28,29 @@ The steps of this project are the following:
 
 ---
 
+## **Development**
+
+### **Description**
+
+In the `AdvancedLaneLinesFinderVideo` script the following steps are executed:
+
+1. A `Camera` object is created and initialized by calibrating the camera.
+1. A video is loaded and each frame is processed by the method `processImage`.
+1. Inside `processImage` the frame is undistorted using the Camera's method `getUndistortedImage`. After that, the `pipeline` method is called and the processed image is obtained. Also, the is first frame `flag` is set to false.
+1. Finally, the video is saved to the output folder.
+
+This process is very straightforward and the only observation necessary is that in the `pipeline` method the values of the previous left and right polynomial fit should be provided, as well as the distorted and undistorted images.
+
+### **Development Files**
+
+| File | Description |
+| ------ | ------ |
+| Camera.py | Camera Calibration Class |
+| Pipeline.py | Pipeline Methods | 
+| AdvancedLaneLinesFinderVideo.py | Runs Pipeline on Videos | 
+
+
+
 ## **Camera Calibration**
 
 In order to calibrate the image, a class `Camera` was created. Inside of it, fixed values of chess board corner sides were defined for the X and Y axis (9 and 6 respectively). In this class, a initialization method called `calibrateCamera` was setup in order to execute all the calibration process for the project's camera. In this method, all calibration images are loaded, converted to grayscale and processed with the `cv2.findChessboardCorners` method. After that process, the `objpoints` and `imgpoints` lists are obtained. Next, the method `cv2.calibrateCamera` and obtains the calibration parameters to be used. This method should used in the program's initialization process.
