@@ -18,13 +18,19 @@ The steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/undistort_output.png "Undistorted"
-[image2]: ./test_images/test1.jpg "Road Transformed"
-[image3]: ./examples/binary_combo_example.jpg "Binary Example"
-[image4]: ./examples/warped_straight_lines.jpg "Warp Example"
-[image5]: ./examples/color_fit_lines.jpg "Fit Visual"
-[image6]: ./examples/example_output.jpg "Output"
-[video1]: ./project_video.mp4 "Video"
+[image1]: ./report_images/distImg.png "Distorted"
+[image2]: ./report_images/distImg.png "Undistorted"
+[image3]: ./report_images/satbin.png "Saturation Channel Binary"
+[image4]: ./report_images/sobelsatbin.png "Saturation Channel Sobel X Binary"
+[image5]: ./report_images/sobellightbin.png "Light Channel Sobel X Binary"
+[image6]: ./report_images/resultbin.png "Result Binary"
+[image7]: ./report_images/birdview.png "Bird view"
+[image8]: ./report_images/gotLines.png "Lane Lines"
+[image9]: ./report_images/equation.png "Curvature Equation"
+[image10]: ./report_images/final.png "Final Result"
+
+
+[video1]: .test_videos_output/project_video.mp4 "Video"
 
 ---
 
