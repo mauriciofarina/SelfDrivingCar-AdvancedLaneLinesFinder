@@ -19,7 +19,7 @@ The steps of this project are the following:
 [//]: # (Image References)
 
 [image1]: ./report_images/distImg.png "Distorted"
-[image2]: ./report_images/distImg.png "Undistorted"
+[image2]: .report_images/undistImg.png "Undistorted"
 [image3]: ./report_images/satbin.png "Saturation Channel Binary"
 [image4]: ./report_images/sobelsatbin.png "Saturation Channel Sobel X Binary"
 [image5]: ./report_images/sobellightbin.png "Light Channel Sobel X Binary"
@@ -66,6 +66,9 @@ After the initialization process is done, an undistorted image can be obtained u
 ```python
 
 ```
+
+![alt_text][image1] 
+![alt_text][image2]
 
 ## **Binary Image**
 
