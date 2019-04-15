@@ -59,14 +59,14 @@ def pipeline(distortedImage, undistortedImage, flag, left_fit, right_fit):
     [(size[1] * 5 / 6) + 60, size[0]],
     [(size[1] / 2) + 60, size[0] / 2 + 100]])
 
-
+    
     # Calculate Destination Coordinates
     dst = np.float32(
     [[(size[1] / 4), 0],
     [(size[1] / 4), size[0]],
     [(size[1] * 3 / 4), size[0]],
     [(size[1] * 3 / 4), 0]])
-    
+
     # Calculate Perspective Transform Matrix
     M = cv2.getPerspectiveTransform(src, dst)
 
