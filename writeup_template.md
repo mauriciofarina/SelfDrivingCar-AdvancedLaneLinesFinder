@@ -26,7 +26,7 @@ The steps of this project are the following:
 [image6]: ./report_images/final.png "Final Result"
 
 
-[video1]: .test_videos_output/project_video.mp4 "Video"
+
 
 ---
 
@@ -38,7 +38,7 @@ In the `AdvancedLaneLinesFinderVideo` script the following steps are executed:
 
 1. A `Camera` object is created and initialized by calibrating the camera.
 1. A video is loaded and each frame is processed by the method `processImage`.
-1. Inside `processImage` the frame is undistorted using the Camera's method `getUndistortedImage`. After that, the `pipeline` method is called and the processed image is obtained. Also, the is first frame `flag` is set to false.
+1. Inside `processImage` the frame is undistorted using the Camera's method `getUndistortedImage`. After that, the `pipeline` method is called and the processed image is obtained. Also, the first frame `flag` is set to false.
 1. Finally, the video is saved to the output folder.
 
 This process is very straightforward and the only observation necessary is that in the `pipeline` method the values of the previous left and right polynomial fit should be provided, as well as the distorted and undistorted images.
@@ -55,7 +55,7 @@ This process is very straightforward and the only observation necessary is that 
 
 ## **Camera Calibration**
 
-In order to calibrate the image, a class `Camera` was created. Inside of it, the fixed values of the chess board corner were defined for the X and Y axis (9 and 6 respectively). In this class, a initialization method called `calibrateCamera` was setup in order to execute all the calibration process for the project's camera. In this method, all calibration images are loaded, converted to grayscale and processed with the `cv2.findChessboardCorners` method. After that process, the `objpoints` and `imgpoints` lists were obtained. Next, the method `cv2.calibrateCamera` was executed, resulting the calibration parameters to be used. This method should used in the program's initialization process.
+In order to calibrate the image, a class `Camera` was created. Inside of it, the fixed values of the chess board corner were defined for the X and Y axis (9 and 6 respectively). In this class, an initialization method called `calibrateCamera` was setup in order to execute all the calibration process for the project's camera. In this method, all calibration images are loaded, converted to grayscale and processed with the `cv2.findChessboardCorners` method. After that process, the `objpoints` and `imgpoints` lists were obtained. Next, the method `cv2.calibrateCamera` was executed, resulting the calibration parameters to be used. This method should used in the program's initialization process.
 
 After the initialization process is done, an undistorted image can be obtained using the method `getUndistortedImage`. This method apply the calibration parameters to the distorted image using the method `cv2.undistort`.
 
@@ -106,9 +106,9 @@ After obtaining the undistorted image, three steps are performed in order to obt
 
 1. First, the image is converted from the RGB color space to the HLS color space. After that, the image is divided into its three channels. Finally, the upper and lower thresholds are applied to the saturation channel and the first binary image is obtained.
 
-1. With the HLS channels obtained, the Sobel X is calculated for the channels saturation and light. At the end, thresholds were used in order to obtain the seccond and third binary images.
+1. With the HLS channels obtained, the Sobel X is calculated for the channels saturation and light. At the end, thresholds were used in order to obtain the second and third binary images.
 
-1. Finally, the resulting binary image is obtained by the result of an **OR** operation of three images from the previeous steps.
+1. Finally, the resulting binary image is obtained by the result of an **OR** operation of three images from the previous steps.
 
 ```python
 # Convert Image to HLS color space
@@ -153,7 +153,7 @@ After obtaining the undistorted image, three steps are performed in order to obt
 
 ## **Perspective Transform**
 
-In order to obtain a perspective transformation of the lane image, the source and destination coordinates were defined. After that, the perspective transoformation matrix was calculated using the method `cv2.getPerspectiveTransform`.
+In order to obtain a perspective transformation of the lane image, the source and destination coordinates were defined. After that, the perspective transformation matrix was calculated using the method `cv2.getPerspectiveTransform`.
 
 ```python
 ## Perspective Transformation
@@ -194,9 +194,9 @@ Resulting in the values:
 
 ## **Lane Lines Detection and Polynomial Fit**
 
-As the final step for detecting the lane Lines, two aproaches were used to find lane lines and define their respective polynomials.
+As the final step for detecting the lane Lines, two approaches were used to find lane lines and define their respective polynomials.
 
-For the first frame, the **Sliding Window** method (`findInitialLine`) was used in order to obtain the first aproximation. In order to do so, first, it calculates the histogram for the botton half of the the image and then, calculates the middle point for the Left and Right Windows. Next, it searches for pixels inside the window and recenters the next window to the average position of the previeus one.
+For the first frame, the **Sliding Window** method (`findInitialLine`) was used in order to obtain the first approximation. In order to do so, first, it calculates the histogram for the bottom half of the image and then, calculates the middle point for the Left and Right Windows. Next, it searches for pixels inside the window and recenter the next window to the average position of the previous one.
 
 ```python
 # Find Lane Lines with Sliding Window Method
@@ -307,7 +307,7 @@ def searchAroundPoly(binary_warped, left_fit, right_fit):
     return leftx, lefty, rightx, righty, left_fit, right_fit
 ```
 
-Finally, the weighted average of the current and previous polynomial coefficients (with weights 2 and 8 respectively) is calculated, resulting in the final frame's left and right polynomials. This final process was done in order to make the a smooth transition in the polynomials found between frames.
+Finally, the weighted average of the current and previous polynomial coefficients (with weights 2 and 8 respectively) is calculated, resulting in the final frame's left and right polynomials. This final process was done in order to make a smooth transition in the polynomials found between frames.
 
 
 ```python
@@ -348,7 +348,7 @@ To calculate the lane lines curvature and the offset between the car and the cen
 
 ### Curvature
 
-To calculate the curvature of the left and right lane lines, the max value of Y (Botton of the image) was choosen. After converting its value from pixels to meters, the resulting value was calculated using the equation:
+To calculate the curvature of the left and right lane lines, the max value of Y (Botton of the image) was chosen. After converting its value from pixels to meters, the resulting value was calculated using the equation:
 
 ![alt_text][image5]
 
@@ -436,3 +436,14 @@ In order to display the results on the processed video, the area between the lef
 ```
 
 ![alt_text][image6]
+
+
+# **Results**
+
+## **Pipeline**
+
+[Here](./test_videos_output/project_video.mp4) is the result of the pipeline processing for the project_video.mp4.
+
+## **Discussion**
+
+In this version of the pipeline, all the problems found in the challenge of project 1 were solved. However, new problems were introduced in this project. In the challenge_video, a dark line in present in the middle of the two lane lines, causing noise to the algorithm a turning it unstable. Also, the pavement is similar to some of the lane lines, causing problems on its detection as well. In the harder_challenge_video is possible that a second degree polynomial is not enough to represent the lane lines, so fitting the points to a higher degree polynomial may improve the results.
