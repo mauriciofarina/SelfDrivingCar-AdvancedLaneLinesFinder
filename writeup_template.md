@@ -18,16 +18,12 @@ The steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./report_images/distImg.png "Distorted"
-[image2]: .report_images/undistImg.png "Undistorted"
-[image3]: ./report_images/satbin.png "Saturation Channel Binary"
-[image4]: ./report_images/sobelsatbin.png "Saturation Channel Sobel X Binary"
-[image5]: ./report_images/sobellightbin.png "Light Channel Sobel X Binary"
-[image6]: ./report_images/resultbin.png "Result Binary"
-[image7]: ./report_images/birdview.png "Bird view"
-[image8]: ./report_images/gotLines.png "Lane Lines"
-[image9]: ./report_images/equation.png "Curvature Equation"
-[image10]: ./report_images/final.png "Final Result"
+[image1]: .report_images/distundist.png "Camera Calibration"
+[image2]: .report_images/binary.jpeg "Binary Image"
+[image3]: ./report_images/birdview.png "Bird view"
+[image4]: ./report_images/gotLines.png "Lane Lines"
+[image5]: ./report_images/equation.png "Curvature Equation"
+[image6]: ./report_images/final.png "Final Result"
 
 
 [video1]: .test_videos_output/project_video.mp4 "Video"
@@ -68,7 +64,7 @@ After the initialization process is done, an undistorted image can be obtained u
 ```
 
 ![alt_text][image1] 
-![alt_text][image2]
+
 
 ## **Binary Image**
 
@@ -83,6 +79,8 @@ After obtaining the undistorted image, three steps are performed in order to obt
 ```python
 
 ```
+
+![alt_text][image2]
 
 ## **Perspective Transform**
 
@@ -100,6 +98,8 @@ Resulting in the values:
 | 100 | 100 | 100 | 100 |
 | 100 | 100 | 100 | 100 |
 | 100 | 100 | 100 | 100 |
+
+![alt_text][image3]
 
 
 ## **Lane Lines Detection and Polynomial Fit**
@@ -125,6 +125,8 @@ Finally, the weighted average of the current and previous polynomial coefficient
 
 ```
 
+![alt_text][image4]
+
 ## **Curvature and Vehicle Offset**
 
 To calculate the lane lines curvature and the offset between the car and the center of the lane, a method called `measureCurvatureAndOffset` was created. In order to obtain the results in meters, a convertion coefficient between pixels and meters was defined as such:
@@ -139,7 +141,7 @@ To calculate the lane lines curvature and the offset between the car and the cen
 
 To calculate the curvature of the left and right lane lines, the max value of Y (Botton of the image) was choosen. After converting its value from pixels to meters, the resulting value was calculated using the equation:
 
-**EQUATION HERE**
+![alt_text][image5]
 
 ```python
 
@@ -164,3 +166,4 @@ In order to display the results on the processed video, the area between the lef
 
 ```
 
+![alt_text][image6]
