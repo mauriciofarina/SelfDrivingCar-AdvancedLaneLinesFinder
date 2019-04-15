@@ -44,28 +44,70 @@ After obtaining the undistorted image, three steps are performed in order to obt
 
 1. Finally, the resulting binary image is obtained by the result of an **OR** operation of three images from the previeous steps.
 
+**TODO CODE HERE**
+
 ## **Perspective Transform**
 
-In order to obtain a perspective transformation of the lane image, the source and destination coordinates were defined with:
+In order to obtain a perspective transformation of the lane image, the source and destination coordinates were defined. After that, the perspective transoformation matrix was calculated using the method `cv2.getPerspectiveTransform`.
 
 **TODO CODE HERE**
 
 Resulting in the values:
 
-| Source | | Destination | |
 | Source X | Source Y | Destination X | Destination Y |
 | -------- | -------- | ------------- | ------------- |
-| -------- | -------- | ------------- | ------------- |
-| -------- | -------- | ------------- | ------------- |
-| -------- | -------- | ------------- | ------------- |
-| -------- | -------- | ------------- | ------------- |
+| 100 | 100 | 100 | 100 |
+| 100 | 100 | 100 | 100 |
+| 100 | 100 | 100 | 100 |
+| 100 | 100 | 100 | 100 |
+
+
+## **Lane Lines Detection and Polynomial Fit**
+
+As the final step for detecting the lane Lines, two aproaches were used to find lane lines and define their respective polynomials.
+
+For the first frame, the **Sliding Window** method (`findInitialLine`) was used in order to obtain the first aproximation. In order to do so, first, it calculates the histogram for the botton half of the the image and then, calculates the middle point for the Left and Right Windows. Next, it searches for pixels inside the window and recenters the next window to the average position of the previeus one.
+
+**TODO CODE HERE**
+
+For the other frames, a method based on the previous polynomial (`searchAroundPoly`) is used in order to find the frame's lane lines polynomial. This method searches for all pixels close to a margin value of the previous frame polynomial. After that, it fits a new polynomial based on the average of this points.
+
+**TODO CODE HERE**
+
+Finally, the weighted average of the current and previous polynomial coefficients (with weights 2 and 8 respectively) is calculated, resulting in the final frame's left and right polynomials. This final process was done in order to make the a smooth transition in the polynomials found between frames.
+
+
+**TODO CODE HERE**
+
+## **Curvature and Vehicle Offset**
+
+To calculate the lane lines curvature and the offset between the car and the center of the lane, a method called `measureCurvatureAndOffset` was created. In order to obtain the results in meters, a convertion coefficient between pixels and meters was defined as such:
+
+|Axis|Meters per Pixels|
+|----|-----------------|
+| Y  | 30/720          |
+| X  | 3.7/700         |
+
+
+### Curvature
+
+To calculate the curvature of the left and right lane lines, the max value of Y (Botton of the image) was choosen. After converting its value from pixels to meters, the resulting value was calculated using the equation:
+
+**EQUATION HERE**
+
+**TODO CODE HERE**
+
+### Offset
+
+Since the camera is positioned in the center of the car, the offset can be easily calculated by the difference between the middle point of the lane lines and the image center. In order to do so, the X position of the two lines was calculated using the same Y value used for the curvature (Max Y value), and the middle point between the two lines was calculated. Next, the difference between the center of the image and the middle point was obtained and finally converted to meters.
+
+**TODO CODE HERE**
 
 
 
+## **Visualization**
 
-
-
-
+In order to display the results on the processed video, the area between the left and right polynomials was highlighted in green in the perspective transformed image. After that, the inverse of perspective transform matrix was calculated so that a highlighted version of the original image could be obtained. In the final image, the frame's results for curvature and offset were added as text for observation.
 
 
 
