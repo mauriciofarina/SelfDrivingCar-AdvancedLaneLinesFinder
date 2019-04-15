@@ -52,13 +52,20 @@ def pipeline(distortedImage, undistortedImage, flag, left_fit, right_fit):
     
     ## Perspective Transformation
 
-    # Define Desired Coordinates
-    src = np.float32([[690, 450], [1110, size[0]], [175, size[0]], [595, 450]])
+    # Define Source Coordinates
+    src = np.float32(
+    [[(size[1] / 2) - 60, size[0] / 2 + 100],
+    [((size[1] / 6) - 10), size[0]],
+    [(size[1] * 5 / 6) + 60, size[0]],
+    [(size[1] / 2) + 60, size[0] / 2 + 100]])
+
 
     # Calculate Destination Coordinates
-    offset = 300
-    dst = np.float32([[size[1]-offset, 0], [size[1]-offset, size[0]],
-                      [offset, size[0]], [offset, 0]])
+    dst = np.float32(
+    [[(size[1] / 4), 0],
+    [(size[1] / 4), size[0]],
+    [(size[1] * 3 / 4), size[0]],
+    [(size[1] * 3 / 4), 0]])
     
     # Calculate Perspective Transform Matrix
     M = cv2.getPerspectiveTransform(src, dst)
@@ -66,7 +73,7 @@ def pipeline(distortedImage, undistortedImage, flag, left_fit, right_fit):
     # Warp image
     warped = cv2.warpPerspective(result, M, (size[1], size[0]))
 
-
+    
 
     ## Find Polynomial
 
@@ -244,16 +251,16 @@ def measureCurvatureAndOffset(ploty, left_fit, right_fit, size):
     
     # Define Desired y value for Curvature
     y_eval = np.max(ploty) #(Botton of the Image)
-
-    # Calculate Respective x value for Curvature
-    xleft = left_fit[0]*y_eval**2 + left_fit[1]*y_eval + left_fit[2]
-    xright = right_fit[0]*y_eval**2 + right_fit[1]*y_eval + right_fit[2]
     
     # Calculates Left and Right Curvatures
     left_curverad = ((1 + (2*left_fit[0]*y_eval*ym_per_pix + left_fit[1])**2)**1.5) / np.absolute(2*left_fit[0])
     right_curverad = ((1 + (2*right_fit[0]*y_eval*ym_per_pix + right_fit[1])**2)**1.5) / np.absolute(2*right_fit[0])
     
     ## Car Offset
+
+    # Calculate Respective x value
+    xleft = left_fit[0]*y_eval**2 + left_fit[1]*y_eval + left_fit[2]
+    xright = right_fit[0]*y_eval**2 + right_fit[1]*y_eval + right_fit[2]
 
     # Find Lane Center in Pixels
     center = ((xright - xleft)/2 ) + xleft
