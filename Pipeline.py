@@ -119,7 +119,7 @@ def pipeline(distortedImage, undistortedImage, flag, left_fit, right_fit):
     newwarp = cv2.warpPerspective(color_warp, Minv, (size[1], size[0]))
 
     # Combine the result with the original image
-    result = cv2.addWeighted(distortedImage, 1, newwarp, 0.3, 0)
+    result = cv2.addWeighted(undistortedImage, 1, newwarp, 0.3, 0)
 
     # Measure Real Curvature and Offset
     left_curverad, right_curverad, carOffset = measureCurvatureAndOffset(ploty, left_fit, right_fit, size)
@@ -249,25 +249,37 @@ def measureCurvatureAndOffset(ploty, left_fit, right_fit, size):
     ym_per_pix = 30/720 # meters per pixel in y dimension
     xm_per_pix = 3.7/700 # meters per pixel in x dimension
     
+
+    # Convert Polynomial from Pixels to Meters
+    left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
+    right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
+
+    realLeftX = left_fitx*xm_per_pix
+    realLeftY = ploty*ym_per_pix
+    realRightX = right_fitx*xm_per_pix
+    realRightY = ploty*ym_per_pix
+
+    RealLeftFit = np.polyfit(realLeftY, realLeftX, 2)
+    RealRightFit = np.polyfit(realRightY, realRightX, 2)
+
+
     # Define Desired y value for Curvature
-    y_eval = np.max(ploty) #(Botton of the Image)
+    y_eval = np.max(ploty)*ym_per_pix #(Botton of the Image)
     
     # Calculates Left and Right Curvatures
-    left_curverad = ((1 + (2*left_fit[0]*y_eval*ym_per_pix + left_fit[1])**2)**1.5) / np.absolute(2*left_fit[0])
-    right_curverad = ((1 + (2*right_fit[0]*y_eval*ym_per_pix + right_fit[1])**2)**1.5) / np.absolute(2*right_fit[0])
+    left_curverad = ((1 + (2*RealLeftFit[0]*y_eval + RealLeftFit[1])**2)**1.5) / np.absolute(2*RealLeftFit[0])
+    right_curverad = ((1 + (2*RealRightFit[0]*y_eval + RealRightFit[1])**2)**1.5) / np.absolute(2*RealRightFit[0])
     
     ## Car Offset
 
     # Calculate Respective x value
-    xleft = left_fit[0]*y_eval**2 + left_fit[1]*y_eval + left_fit[2]
-    xright = right_fit[0]*y_eval**2 + right_fit[1]*y_eval + right_fit[2]
+    xleft = RealLeftFit[0]*y_eval**2 + RealLeftFit[1]*y_eval + RealLeftFit[2]
+    xright = RealRightFit[0]*y_eval**2 + RealRightFit[1]*y_eval + RealRightFit[2]
 
     # Find Lane Center in Pixels
     center = ((xright - xleft)/2 ) + xleft
     # Find Car Offset in Pixels
-    carOffset =  center - (size[1]/2)
-    # Convert Offset from pixels to meters
-    carOffset = carOffset*xm_per_pix
+    carOffset =  center - (xm_per_pix*size[1]/2)
 
     return left_curverad, right_curverad, carOffset
 

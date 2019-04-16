@@ -348,7 +348,7 @@ To calculate the lane lines curvature and the offset between the car and the cen
 
 ### Curvature
 
-To calculate the curvature of the left and right lane lines, the max value of Y (Botton of the image) was chosen. After converting its value from pixels to meters, the resulting value was calculated using the equation:
+To calculate the curvature of the left and right lane lines, the max value of Y (Botton of the image) was chosen. After converting the polynomial from pixels to meters, the resulting value was calculated using the equation:
 
 ![alt_text][image5]
 
@@ -362,31 +362,43 @@ def measureCurvatureAndOffset(ploty, left_fit, right_fit, size):
     ym_per_pix = 30/720 # meters per pixel in y dimension
     xm_per_pix = 3.7/700 # meters per pixel in x dimension
     
+
+    # Convert Polynomial from Pixels to Meters
+    left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
+    right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
+
+    realLeftX = left_fitx*xm_per_pix
+    realLeftY = ploty*ym_per_pix
+    realRightX = right_fitx*xm_per_pix
+    realRightY = ploty*ym_per_pix
+
+    RealLeftFit = np.polyfit(realLeftY, realLeftX, 2)
+    RealRightFit = np.polyfit(realRightY, realRightX, 2)
+
+
     # Define Desired y value for Curvature
-    y_eval = np.max(ploty) #(Botton of the Image)
+    y_eval = np.max(ploty)*ym_per_pix #(Botton of the Image)
     
     # Calculates Left and Right Curvatures
-    left_curverad = ((1 + (2*left_fit[0]*y_eval*ym_per_pix + left_fit[1])**2)**1.5) / np.absolute(2*left_fit[0])
-    right_curverad = ((1 + (2*right_fit[0]*y_eval*ym_per_pix + right_fit[1])**2)**1.5) / np.absolute(2*right_fit[0])
+    left_curverad = ((1 + (2*RealLeftFit[0]*y_eval + RealLeftFit[1])**2)**1.5) / np.absolute(2*RealLeftFit[0])
+    right_curverad = ((1 + (2*RealRightFit[0]*y_eval + RealRightFit[1])**2)**1.5) / np.absolute(2*RealRightFit[0])
 ```
 
 ### Offset
 
-Since the camera is positioned in the center of the car, the offset can be easily calculated by the difference between the middle point of the lane lines and the image center. In order to do so, the X position of the two lines was calculated using the same Y value used for the curvature (Max Y value), and the middle point between the two lines was calculated. Next, the difference between the center of the image and the middle point was obtained and finally converted to meters.
+Since the camera is positioned in the center of the car, the offset can be easily calculated by the difference between the middle point of the lane lines and the image center. In order to do so, the X position of the two lines was calculated using the same Y value used for the curvature (Max Y value), and the middle point between the two lines was calculated. Next, the difference between the center of the image and the middle point was obtained.
 
 ```python
-## Car Offset
+    ## Car Offset
 
     # Calculate Respective x value
-    xleft = left_fit[0]*y_eval**2 + left_fit[1]*y_eval + left_fit[2]
-    xright = right_fit[0]*y_eval**2 + right_fit[1]*y_eval + right_fit[2]
+    xleft = RealLeftFit[0]*y_eval**2 + RealLeftFit[1]*y_eval + RealLeftFit[2]
+    xright = RealRightFit[0]*y_eval**2 + RealRightFit[1]*y_eval + RealRightFit[2]
 
     # Find Lane Center in Pixels
     center = ((xright - xleft)/2 ) + xleft
     # Find Car Offset in Pixels
-    carOffset =  center - (size[1]/2)
-    # Convert Offset from pixels to meters
-    carOffset = carOffset*xm_per_pix
+    carOffset =  center - (xm_per_pix*size[1]/2)
 
     return left_curverad, right_curverad, carOffset
 ```
